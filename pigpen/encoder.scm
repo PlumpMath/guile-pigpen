@@ -151,9 +151,9 @@
                lst))
         res)))
 
-(define (display/pigpen pigpen-list)
+(define* (display/pigpen pigpen-list #:optional (port (current-output-port)))
   "Display a PIGPEN-LIST."
-  (display (pigpen-list->pigpen-string pigpen-list)))
+  (display (pigpen-list->pigpen-string pigpen-list) port))
 
 (define* (encode str #:key (output-format 'ascii))
   (let ((pigpen-list (string->pigpen-list str)))
