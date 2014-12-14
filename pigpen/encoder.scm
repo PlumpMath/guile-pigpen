@@ -128,12 +128,10 @@
          "     "))))
 
 (define (string->pigpen-list str)
-  (let ((res '()))
-    (string-for-each
-     (lambda (ch)
-       (set! res (cons (char->pigpen ch) res)))
-     str)
-    (reverse res)))
+  (string-fold-right (lambda (ch prev)
+                       (cons (char->pigpen ch) prev))
+                     (list (list "" "" ""))
+                     str))
 
 (define (pigpen-list->pigpen-string lst)
   (let append-line ((idx 0)
