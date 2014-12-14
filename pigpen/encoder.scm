@@ -114,6 +114,7 @@
      "     ")))
 
 (define (char->pigpen ch)
+  "Convert a char CH to the corresponding pigpen symbol."
   (let ((pigpen-symbol (assoc-ref %ascii-mapping (char-downcase ch))))
     (if pigpen-symbol
         pigpen-symbol
