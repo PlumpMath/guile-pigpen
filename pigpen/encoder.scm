@@ -132,12 +132,14 @@
          "     "))))
 
 (define (string->pigpen-list str)
+  "Convert a string STR to a pigpen list."
   (string-fold-right (lambda (ch prev)
                        (cons (char->pigpen ch) prev))
                      (list (list "" "" ""))
                      str))
 
 (define (pigpen-list->pigpen-string lst)
+  "Convert a pigpen list LST to a pigpen string."
   (let append-line ((idx 0)
                     (res ""))
     (if (< idx 3)
@@ -150,6 +152,7 @@
         res)))
 
 (define (display/pigpen pigpen-list)
+  "Display a PIGPEN-LIST."
   (display (pigpen-list->pigpen-string pigpen-list)))
 
 (define* (encode str #:key (output-format 'ascii))
