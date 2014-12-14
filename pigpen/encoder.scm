@@ -5,7 +5,7 @@
   #:export (encode
             char->pigpen
             string->pigpen-list
-            pigpen-list->pigpen-string
+            pigpen-list->pigpen-string))
 
 (define %ascii-mapping
   '((#\a
