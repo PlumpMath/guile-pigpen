@@ -114,7 +114,13 @@
      "     ")))
 
 (define (char->pigpen ch)
-  (assoc-ref %ascii-mapping (char-downcase ch)))
+  (let ((pigpen-symbol (assoc-ref %ascii-mapping (char-downcase ch))))
+    (if pigpen-symbol
+        pigpen-symbol
+        (list
+         "     "
+         (string-append "  " (string ch) "  ")
+         "     "))))
 
 (define (string->pigpen-list str)
   (let ((res '()))
