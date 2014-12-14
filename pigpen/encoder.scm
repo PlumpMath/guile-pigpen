@@ -1,7 +1,7 @@
 (define-module (pigpen encoder)
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 regex)
-  #:export (encode))
+  #:export (encode char->pigpen))
 
 (define %ascii-mapping
   '((#\a
