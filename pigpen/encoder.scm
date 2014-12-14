@@ -4,6 +4,7 @@
   #:use-module (srfi  srfi-1)
   #:export (encode
             char->pigpen
+            string->pigpen-list
             pigpen-list->pigpen-string
 
 (define %ascii-mapping
