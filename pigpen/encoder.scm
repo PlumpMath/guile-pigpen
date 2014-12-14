@@ -117,7 +117,8 @@
   (let ((res '()))
     (string-for-each
      (lambda (ch)
-       (set! res (cons (assoc-ref %ascii-mapping ch)
+       (set! res (cons (assoc-ref %ascii-mapping
+                                  (char-downcase ch))
                        res)))
      str)
     (reverse res)))
