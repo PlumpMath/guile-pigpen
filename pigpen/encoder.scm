@@ -1,7 +1,10 @@
 (define-module (pigpen encoder)
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 regex)
-  #:export (encode char->pigpen))
+  #:use-module (srfi  srfi-1)
+  #:export (encode
+            char->pigpen
+            pigpen-list->pigpen-string
 
 (define %ascii-mapping
   '((#\a
@@ -131,19 +134,20 @@
      str)
     (reverse res)))
 
+(define (pigpen-list->pigpen-string lst)
+  (let append-line ((idx 0)
+                    (res ""))
+    (if (< idx 3)
+        (append-line
+         (1+ idx)
+         (fold (lambda (elem prev)
+                 (string-append prev (list-ref elem idx)))
+               (string-append res "\n")
+               lst))
+        res)))
+
 (define (display/pigpen pigpen-list)
-  (for-each (lambda (e)
-              (display (car e)))
-            pigpen-list)
-  (newline)
-  (for-each (lambda (e)
-              (display (cadr e)))
-            pigpen-list)
-  (newline)
-  (for-each (lambda (e)
-              (display (caddr e)))
-            pigpen-list)
-  (newline))
+  (display (pigpen-list->pigpen-string pigpen-list)))
 
 (define* (encode str #:key (output-format 'ascii))
   (let ((pigpen-list (string->pigpen-list str)))
