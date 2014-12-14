@@ -113,13 +113,14 @@
      "     "
      "     ")))
 
+(define (char->pigpen ch)
+  (assoc-ref %ascii-mapping (char-downcase ch)))
+
 (define (string->pigpen-list str)
   (let ((res '()))
     (string-for-each
      (lambda (ch)
-       (set! res (cons (assoc-ref %ascii-mapping
-                                  (char-downcase ch))
-                       res)))
+       (set! res (cons (char->pigpen ch) res)))
      str)
     (reverse res)))
 
