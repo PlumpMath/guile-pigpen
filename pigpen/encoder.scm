@@ -27,27 +27,43 @@
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 regex)
   #:use-module (srfi  srfi-1)
+  #:use-module (srfi  srfi-26)
   #:use-module (pigpen cipher)
   #:export (encode
             char->pigpen
             string->pigpen-list
             pigpen-list->pigpen-string))
 
+(define <pigpen-char>
+  (make-vtable "prpr"
+               (lambda (struct port)
+                 (format port "#<pigpen-char ~a>" (struct-ref struct 0)))))
+
+(define (pigpen-char? x)
+  "Check if X is a <pigpen-char> instance."
+  (and (struct? x)
+       (eq? (struct-vtable x) <pigpen-char>)))
+
 (define (char->pigpen ch)
   "Convert a char CH to the corresponding pigpen symbol."
-  (let ((pigpen-symbol (assoc-ref %ascii-mapping (char-downcase ch))))
-    (if pigpen-symbol
-        pigpen-symbol
-        (list
-         "     "
-         (string-append "  " (string ch) "  ")
-         "     "))))
+  (cond ((not (char? ch))
+         (error "Wrong type (expecting char)" ch))
+        ((char=? ch #\nul)
+         (make-struct/no-tail <pigpen-char> ch (list "" "" "")))
+        ((assoc-ref %ascii-mapping (char-downcase ch)) =>
+         (cut make-struct/no-tail <pigpen-char> ch <>))
+        (else
+         (make-struct/no-tail <pigpen-char> ch
+                              (list
+                               "     "
+                               (string-append "  " (string ch) "  ")
+                               "     ")))))
 
 (define (string->pigpen-list str)
   "Convert a string STR to a pigpen list."
   (string-fold-right (lambda (ch prev)
                        (cons (char->pigpen ch) prev))
-                     (list (list "" "" ""))
+                     (list (char->pigpen #\nul))
                      str))
 
 (define (pigpen-list->pigpen-string lst)
@@ -58,14 +74,19 @@
         (append-line
          (1+ idx)
          (fold (lambda (elem prev)
-                 (string-append prev (list-ref elem idx)))
+                 (string-append prev (list-ref (struct-ref elem 1) idx)))
                (string-append res "\n")
                lst))
         res)))
 
-(define* (display/pigpen pigpen-list #:optional (port (current-output-port)))
-  "Display a PIGPEN-LIST."
-  (display (pigpen-list->pigpen-string pigpen-list) port))
+(define* (display/pigpen pigpen #:optional (port (current-output-port)))
+  "Display a PIGPEN object."
+  (cond ((pigpen-char? pigpen)
+         (display (pigpen-list->pigpen-string (list pigpen)) port))
+        ((pair? pigpen)
+         (display (pigpen-list->pigpen-string pigpen) port))
+        (else
+         (error "Wrong data type" pigpen))))
 
 (define* (encode str #:key (output-format 'ascii))
   (let ((pigpen-list (string->pigpen-list str)))
