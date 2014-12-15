@@ -27,37 +27,11 @@
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 regex)
   #:use-module (srfi  srfi-1)
-  #:use-module (srfi  srfi-26)
+  #:use-module (pigpen char)
   #:use-module (pigpen cipher)
   #:export (encode
-            char->pigpen
             string->pigpen-list
             pigpen-list->pigpen-string))
-
-(define <pigpen-char>
-  (make-vtable "prpr"
-               (lambda (struct port)
-                 (format port "#<pigpen-char ~a>" (struct-ref struct 0)))))
-
-(define (pigpen-char? x)
-  "Check if X is a <pigpen-char> instance."
-  (and (struct? x)
-       (eq? (struct-vtable x) <pigpen-char>)))
-
-(define (char->pigpen ch)
-  "Convert a char CH to the corresponding pigpen symbol."
-  (cond ((not (char? ch))
-         (error "Wrong type (expecting char)" ch))
-        ((char=? ch #\nul)
-         (make-struct/no-tail <pigpen-char> ch (list "" "" "")))
-        ((assoc-ref %ascii-mapping (char-downcase ch)) =>
-         (cut make-struct/no-tail <pigpen-char> ch <>))
-        (else
-         (make-struct/no-tail <pigpen-char> ch
-                              (list
-                               "     "
-                               (string-append "  " (string ch) "  ")
-                               "     ")))))
 
 (define (string->pigpen-list str)
   "Convert a string STR to a pigpen list."
