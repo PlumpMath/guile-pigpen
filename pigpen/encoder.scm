@@ -36,8 +36,8 @@
 (define (string->pigpen-list str)
   "Convert a string STR to a pigpen list."
   (string-fold-right (lambda (ch prev)
-                       (cons (char->pigpen ch) prev))
-                     (list (char->pigpen #\nul))
+                       (cons (char->pigpen-char ch) prev))
+                     (list (char->pigpen-char #\nul))
                      str))
 
 (define (pigpen-list->pigpen-string lst)

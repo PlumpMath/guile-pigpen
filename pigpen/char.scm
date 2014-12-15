@@ -28,7 +28,7 @@
   #:use-module (pigpen cipher)
   #:export (pigpen-char
             pigpen-char?
-            char->pigpen))
+            char->pigpen-char))
 
 
 (define <pigpen-char>
@@ -42,7 +42,7 @@
        (eq? (struct-vtable x) <pigpen-char>)))
 
 
-(define (char->pigpen ch)
+(define (char->pigpen-char ch)
   "Convert a char CH to the corresponding pigpen symbol."
   (cond ((not (char? ch))
          (error "Wrong type (expecting char)" ch))
