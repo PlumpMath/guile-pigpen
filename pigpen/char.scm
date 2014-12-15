@@ -29,7 +29,8 @@
   #:export (pigpen-char
             pigpen-char?
             char->pigpen-char
-            pigpen-char->char))
+            pigpen-char->char
+            pigpen-char->string))
 
 
 (define <pigpen-char>
@@ -62,6 +63,15 @@
   "Convert a pigpen char PCH to the corresponding character."
   (if (pigpen-char? pch)
       (struct-ref pch 0)
+      (error "Wrong type (expecting pigpen char)" pch)))
+
+
+(define (pigpen-char->string pch)
+  (if (pigpen-char? pch)
+      (let ((pchar-list (struct-ref pch 1)))
+        (string-append (list-ref pchar-list 0) "\n"
+                       (list-ref pchar-list 1) "\n"
+                       (list-ref pchar-list 2)))
       (error "Wrong type (expecting pigpen char)" pch)))
 
 ;;; char.scm ends here
