@@ -24,13 +24,15 @@
 ;;; Code:
 
 (define-module (pigpen char)
+  #:use-module (srfi   srfi-1)
   #:use-module (srfi   srfi-26)
   #:use-module (pigpen cipher)
   #:export (pigpen-char
             pigpen-char?
             char->pigpen-char
             pigpen-char->char
-            pigpen-char->string))
+            pigpen-char->string
+            string->pigpen-char))
 
 
 (define <pigpen-char>
@@ -73,5 +75,23 @@
                        (list-ref pchar-list 1) "\n"
                        (list-ref pchar-list 2)))
       (error "Wrong type (expecting pigpen char)" pch)))
+
+(define (string->pigpen-char str)
+  "Convert a string STR to a pigpen character."
+  (let ((lst (string-split str #\newline)))
+    (if (= (length lst) 3)
+        (let ((m (find (lambda (e)
+                         (let ((l (cdr e)))
+                           (and (string=? (list-ref l 0) (list-ref lst 0))
+                                (string=? (list-ref l 1) (list-ref lst 1))
+                                (string=? (list-ref l 2) (list-ref lst 2)))))
+                       %ascii-mapping)))
+          (if m
+              (make-struct/no-tail <pigpen-char> (car m) lst)
+              (let ((ch (string-trim (list-ref lst 1))))
+                (if (not (string-null? ch))
+                    (make-struct/no-tail <pigpen-char> (string-ref ch 0) lst)
+                    (error "Could not convert the string" str)))))
+        (error "Wrong number of lines in the string (expecting 3)" str))))
 
 ;;; char.scm ends here
