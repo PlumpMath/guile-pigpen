@@ -28,7 +28,8 @@
   #:use-module (pigpen cipher)
   #:export (pigpen-char
             pigpen-char?
-            char->pigpen-char))
+            char->pigpen-char
+            pigpen-char->char))
 
 
 (define <pigpen-char>
@@ -56,5 +57,11 @@
                                "     "
                                (string-append "  " (string ch) "  ")
                                "     ")))))
+
+(define (pigpen-char->char pch)
+  "Convert a pigpen char PCH to the corresponding character."
+  (if (pigpen-char? pch)
+      (struct-ref pch 0)
+      (error "Wrong type (expecting pigpen char)" pch)))
 
 ;;; char.scm ends here
