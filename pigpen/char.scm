@@ -31,6 +31,8 @@
             pigpen-char?
             char->pigpen-char
             pigpen-char->char
+            pigpen-char->list
+            list->pigpen-char
             pigpen-char->string
             string->pigpen-char))
 
@@ -68,6 +70,31 @@
       (error "Wrong type (expecting pigpen char)" pch)))
 
 
+(define (pigpen-char->list pch)
+  "Convert a pigpen char PCH to a list of strings."
+  (if (pigpen-char? pch)
+      (struct-ref pch 1)
+      (error "Wrong type (expecting pigpen char)" pch)))
+
+(define (list->pigpen-char lst)
+  "Convert list of strings LST to a pigpen character.  LST is expected
+to be a list of 3 elements."
+  (if (= (length lst) 3)
+      (let ((m (find (lambda (e)
+                       (let ((l (cdr e)))
+                         (and (string=? (list-ref l 0) (list-ref lst 0))
+                              (string=? (list-ref l 1) (list-ref lst 1))
+                              (string=? (list-ref l 2) (list-ref lst 2)))))
+                     %ascii-mapping)))
+        (if m
+            (make-struct/no-tail <pigpen-char> (car m) lst)
+            (let ((ch (string-trim (list-ref lst 1))))
+              (if (not (string-null? ch))
+                  (make-struct/no-tail <pigpen-char> (string-ref ch 0) lst)
+                  (error "Could not convert the list" lst)))))
+      (error "Wrong number of lines (expecting 3)" lst)))
+
+
 (define (pigpen-char->string pch)
   (if (pigpen-char? pch)
       (let ((pchar-list (struct-ref pch 1)))
@@ -78,20 +105,6 @@
 
 (define (string->pigpen-char str)
   "Convert a string STR to a pigpen character."
-  (let ((lst (string-split str #\newline)))
-    (if (= (length lst) 3)
-        (let ((m (find (lambda (e)
-                         (let ((l (cdr e)))
-                           (and (string=? (list-ref l 0) (list-ref lst 0))
-                                (string=? (list-ref l 1) (list-ref lst 1))
-                                (string=? (list-ref l 2) (list-ref lst 2)))))
-                       %ascii-mapping)))
-          (if m
-              (make-struct/no-tail <pigpen-char> (car m) lst)
-              (let ((ch (string-trim (list-ref lst 1))))
-                (if (not (string-null? ch))
-                    (make-struct/no-tail <pigpen-char> (string-ref ch 0) lst)
-                    (error "Could not convert the string" str)))))
-        (error "Wrong number of lines in the string (expecting 3)" str))))
+  (list->pigpen-char (string-split str #\newline)))
 
 ;;; char.scm ends here
