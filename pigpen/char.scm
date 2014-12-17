@@ -29,6 +29,7 @@
   #:use-module (pigpen cipher)
   #:export (pigpen-char
             pigpen-char?
+            pigpen-char=?
             char->pigpen-char
             pigpen-char->char
             pigpen-char->list
@@ -46,6 +47,12 @@
   "Check if X is a <pigpen-char> instance."
   (and (struct? x)
        (eq? (struct-vtable x) <pigpen-char>)))
+
+
+(define (pigpen-char=? a b)
+  "Check if pigpen char A and pigpen char B are equal."
+  (char=? (pigpen-char->char a)
+          (pigpen-char->char b)))
 
 
 (define (char->pigpen-char ch)

@@ -26,6 +26,7 @@
 (define-module (pigpen string)
   #:use-module (srfi   srfi-1)
   #:use-module (srfi   srfi-26)
+  #:use-module (ice-9  receive)
   #:use-module (pigpen char)
   #:export (pigpen-string
             pigpen-string?
@@ -34,7 +35,8 @@
             list->pigpen-string
             pigpen-string->list
             string-for-each/pigpen
-            string-fold-right/pigpen))
+            string-fold-right/pigpen
+            pigpen-string-split))
 
 
 (define <pigpen-string>
@@ -69,6 +71,21 @@
   "Apply PROC to a pigpen string PSTR to build a result, and return
 that result."
   (fold proc knil (pigpen-string->list pstr)))
+
+
+(define (pigpen-string-split pstr pch)
+  "Split a pinpen string PSTR using a pinpen char PCH as the
+delimiter.  Return list of pinpen strings."
+  (let ((lst        (pigpen-string->list pstr))
+        (delimiter? (cut pigpen-char=? <> pch)))
+    (let split ((l   lst)
+                (res '()))
+      (receive (head tail)
+          (break delimiter? l)
+        (if (not (null? head))
+            (split tail (cons head res))
+            (map (cut list->pigpen-string <>)
+                 (reverse (cons (drop tail 1) res))))))))
 
 
 (define (pigpen-string->string pstr)
