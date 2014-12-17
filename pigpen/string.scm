@@ -28,7 +28,14 @@
   #:use-module (srfi   srfi-26)
   #:use-module (pigpen char)
   #:export (pigpen-string
-            string->pigpen-string))
+            pigpen-string?
+            string->pigpen-string
+            pigpen-string->string
+            list->pigpen-string
+            pigpen-string->list
+            string-for-each/pigpen
+            string-fold-right/pigpen))
+
 
 (define <pigpen-string>
   (make-vtable "prpr"
