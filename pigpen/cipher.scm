@@ -1,5 +1,8 @@
 (define-module (pigpen cipher)
-  #:export (%ascii-mapping))
+  #:use-module (ice-9 optargs)
+  #:export (print-substitution-table
+            %ascii-mapping
+            %substitution-table))
 
 (define %ascii-mapping
   '((#\a
@@ -114,3 +117,32 @@
      "     "
      "     "
      "     ")))
+
+
+(define %substitution-table
+  "
+A     B     C     J     K     L
+    │   │           o │ o │ o  
+━━━━┿━━━┿━━━━     ━━━━┿━N━┿━━━━
+D   │ E │   F     M o │ o │ o O
+━━━━┿━━━┿━━━━     ━━━━┿━━━┿━━━━
+    │   │           o │ o │ o  
+G     H     I     P     Q     R
+                               
+      S                 W      
+    ╲   ╱             ╲   ╱    
+    ╲╲ ╱╱             ╲╲o╱╱    
+     ╲╳╱               ╲╳╱     
+  ╲╲     ╱╱         ╲╲     ╱╱  
+T  ╳     ╳  U     X o╳     ╳o Y
+  ╱╱     ╲╲         ╱╱     ╲╲  
+     ╱╳╲               ╱╳╲     
+    ╱╱ ╲╲             ╱╱o╲╲    
+    ╱   ╲             ╱   ╲    
+      V                 Z      
+")
+
+(define* (print-substitution-table #:optional (port (current-output-port)))
+  (display %substitution-table port))
+
+;;; cipher.scm ends here
