@@ -29,43 +29,17 @@
   #:use-module (srfi  srfi-1)
   #:use-module (pigpen char)
   #:use-module (pigpen cipher)
-  #:export (encode
-            string->pigpen-list
-            pigpen-list->pigpen-string))
+  #:use-module (pigpen string)
+  #:export (encode))
 
-(define (string->pigpen-list str)
+(define (encode/ascii str)
   "Convert a string STR to a pigpen list."
-  (string-fold-right (lambda (ch prev)
-                       (cons (char->pigpen-char ch) prev))
-                     (list (char->pigpen-char #\nul))
-                     str))
-
-(define (pigpen-list->pigpen-string lst)
-  "Convert a pigpen list LST to a pigpen string."
-  (let append-line ((idx 0)
-                    (res ""))
-    (if (< idx 3)
-        (append-line
-         (1+ idx)
-         (fold (lambda (elem prev)
-                 (string-append prev (list-ref (struct-ref elem 1) idx)))
-               (string-append res "\n")
-               lst))
-        res)))
-
-(define* (display/pigpen pigpen #:optional (port (current-output-port)))
-  "Display a PIGPEN object."
-  (cond ((pigpen-char? pigpen)
-         (display (pigpen-list->pigpen-string (list pigpen)) port))
-        ((pair? pigpen)
-         (display (pigpen-list->pigpen-string pigpen) port))
-        (else
-         (error "Wrong data type" pigpen))))
+  (list->pigpen-string (string-fold-right (lambda (ch prev)
+                                            (cons (char->pigpen-char ch) prev))
+                                          (list (char->pigpen-char #\nul))
+                                          str)))
 
 (define* (encode str #:key (output-format 'ascii))
-  (let ((pigpen-list (string->pigpen-list str)))
-    ;; (display pigpen-list)
-    ;; (newline)
-    (display/pigpen pigpen-list)))
+  (encode/ascii str))
 
 ;;; encoder.scm ends here
