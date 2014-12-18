@@ -91,18 +91,24 @@ delimiter.  Return list of pinpen strings."
 
 (define (pigpen-string->string pstr)
   "Convert a pigpen string PSTR to a scheme string."
-  (let append-line ((idx 0)
-                    (res ""))
+
+  (define (append-line pstr idx res)
     (if (< idx 3)
-        (append-line
-         (1+ idx)
-         (string-fold-right/pigpen (lambda (elem prev)
-                                     (string-append
-                                      prev
-                                      (list-ref (pigpen-char->list elem) idx)))
-                                   (string-append res "\n")
-                                   pstr))
-        res)))
+        (append-line pstr
+                     (1+ idx)
+                     (string-fold-right/pigpen
+                      (lambda (elem prev)
+                        (string-append prev
+                                       (list-ref (pigpen-char->list elem)
+                                                 idx)))
+                      (string-append res "\n")
+                      pstr))
+        res))
+
+  (fold (lambda (elem prev)
+          (string-append prev (append-line elem 0 "")))
+        ""
+        (pigpen-string-split pstr (char->pigpen-char #\newline))))
 
 (define (string->pigpen-string str)
   "Convert a string STR to a pigpen string."
