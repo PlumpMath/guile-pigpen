@@ -82,10 +82,11 @@ delimiter.  Return list of pinpen strings."
                 (res '()))
       (receive (head tail)
           (break delimiter? l)
-        (if (not (null? head))
-            (split tail (cons head res))
+        (if (and (not (null? head))
+                 (not (null? tail)))
+            (split (drop tail 1) (cons head res))
             (map (cut list->pigpen-string <>)
-                 (reverse (cons (drop tail 1) res))))))))
+                 (reverse (cons head res))))))))
 
 
 (define (pigpen-string->string pstr)
