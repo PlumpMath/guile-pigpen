@@ -8,12 +8,41 @@
 (use-modules (ice-9  getopt-long)
              (ice-9  rdelim)
              (pigpen string)
+             (pigpen cipher)
              (pigpen encoder))
 
+(define (print-help-and-exit)
+  (display "
+Usage: pigpen [options] <string>
+
+Options:
+  --substable, -s        Print substitution table and exit.
+  --help, -h             Print this message and exit.
+")
+  (exit 0))
+
 (define (main args)
-  (set-port-encoding! (current-output-port) "UTF-8")
-  (display (pigpen-string->string (encode (cadr args))))
-  (newline))
+
+  (define %option-spec
+    '((substable (single-char #\s) (value #f))
+      (help      (single-char #\h) (value #f))))
+
+  (let* ((options    (getopt-long args %option-spec))
+         (substable? (option-ref options 'substable #f))
+         (help?      (option-ref options 'help      #f)))
+
+    (set-port-encoding! (current-output-port) "UTF-8")
+
+    (and help?
+         (print-help-and-exit))
+
+    (and substable?
+         (begin
+           (print-substitution-table)
+           (exit 0)))
+
+    (display (pigpen-string->string (encode (cadr args))))
+    (newline)))
 
 ;;; pigpen ends here
 
