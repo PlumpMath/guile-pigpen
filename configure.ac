@@ -54,7 +54,7 @@ fi
 AC_SUBST([guilesitedir])
 
 AC_CONFIG_FILES([Makefile am/Makefile build-aux/Makefile m4/Makefile
-                          pigpen/Makefile])
+                          pigpen/Makefile utils/Makefile])
 
 # Generate a Makefile, based on the results.
 AC_OUTPUT

@@ -21,7 +21,7 @@ include $(top_srcdir)/am/guilec
 
 ACLOCAL_AMFLAGS = -I build-aux
 
-SUBDIRS = am build-aux m4 pigpen
+SUBDIRS = am build-aux m4 pigpen utils
 
 GOBJECTS = $(SOURCES:%.scm=%.go)
 

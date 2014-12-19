@@ -1,0 +1,19 @@
+#!@GUILE@ \
+-e main
+# aside from this initial boilerplate, this is actually -*- scheme -*- code
+!#
+
+;;; pigpen -- Pigpen encoder/decoder
+
+(use-modules (ice-9  getopt-long)
+             (ice-9  rdelim)
+             (pigpen string)
+             (pigpen encoder))
+
+(define (main args)
+  (set-port-encoding! (current-output-port) "UTF-8")
+  (display (pigpen-string->string (encode (cadr args))))
+  (newline))
+
+;;; pigpen ends here
+
