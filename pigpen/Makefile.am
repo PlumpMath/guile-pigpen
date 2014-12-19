@@ -33,7 +33,6 @@ pkgguilesitedir = $(guilesitedir)/ssh
 nobase_dist_pkgguilesite_DATA = $(SCM_SOURCES)
 
 GOBJECTS = $(SCM_SOURCES:%.scm=%.go)
-$(GOBJECTS): $(lib_LTLIBRARIES)	# Build the library first
 
 ccachedir=$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache/pigpen
 nobase_dist_ccache_DATA = $(GOBJECTS)
