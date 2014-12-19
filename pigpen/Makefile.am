@@ -52,7 +52,6 @@ guilec_warnings =				\
 guilec_opts = 					\
 	--load-path=$(abs_srcdir)		\
 	--load-path=$(abs_builddir)		\
-	--target=$(host)			\
 	$(guilec_warnings)
 
 guilec_env  = 									\
