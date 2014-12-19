@@ -10,3 +10,29 @@ Guile-Pigpen is an implementation of [[https://en.wikipedia.org/wiki/Pigpen_ciph
 module.
 
 Beware, the module is on the early stages of development.
+
+* Building and installation
+
+#+BEGIN_EXAMPLE
+$ autoreconv -vif
+$ ./configure
+$ make
+$ make install
+#+END_EXAMPLE
+
+* Usage
+  Guile-Pigpen comes with a console tool called =pigpen= that allows
+  you to encode ASCII-strings with Pigpen cipher:
+
+#+BEGIN_EXAMPLE
+$ pigpen 'hello
+world!'
+┍━━━┑┍━━━┑          ┍━━━━
+│   ││   ││ o  │ o  │ o  
+     ┕━━━┙┕━━━━┕━━━━┕━━━━
+╲   ╱┍━━━━┍━━━━     ━━━━┑     
+╲╲o╱╱│ o  │ o  │ o      │  !  
+ ╲╳╱ ┕━━━━     ┕━━━━━━━━┙   
+#+END_EXAMPLE
+
+  See =pigpen -h= for allowed options.
