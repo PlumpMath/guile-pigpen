@@ -29,7 +29,7 @@ SCM_SOURCES = \
 ETAGS_ARGS = $(SCM_SOURCES)
 
 ## Scheme files
-pkgguilesitedir = $(guilesitedir)/ssh
+pkgguilesitedir = $(guilesitedir)/pigpen
 nobase_dist_pkgguilesite_DATA = $(SCM_SOURCES)
 
 GOBJECTS = $(SCM_SOURCES:%.scm=%.go)
