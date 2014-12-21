@@ -32,7 +32,7 @@
   #:use-module (pigpen string)
   #:export (encode))
 
-(define (encode/ascii str)
+(define (encode/unicode str)
   "Convert a string STR to a pigpen list."
   (list->pigpen-string (string-fold-right (lambda (ch prev)
                                             (cons (char->pigpen-char ch) prev))
@@ -40,6 +40,6 @@
                                           str)))
 
 (define* (encode str #:key (output-format 'ascii))
-  (encode/ascii str))
+  (encode/unicode str))
 
 ;;; encoder.scm ends here
