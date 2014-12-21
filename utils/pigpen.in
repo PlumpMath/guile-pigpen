@@ -16,6 +16,9 @@
 Usage: pigpen [options] <string>
 
 Options:
+  --fill, -f             Fill the pigpen string into specified number of
+                         columns.  If no argument is given then use 75 columns
+                         as the goal.
   --substable, -s        Print substitution table and exit.
   --help, -h             Print this message and exit.
 ")
@@ -24,12 +27,15 @@ Options:
 (define (main args)
 
   (define %option-spec
-    '((substable (single-char #\s) (value #f))
+    '((fill      (single-char #\f) (value #t))
+      (substable (single-char #\s) (value #f))
       (help      (single-char #\h) (value #f))))
 
   (let* ((options    (getopt-long args %option-spec))
+         (do-fill    (option-ref options 'fill      #f))
          (substable? (option-ref options 'substable #f))
-         (help?      (option-ref options 'help      #f)))
+         (help?      (option-ref options 'help      #f))
+         (args       (option-ref options '()        #f)))
 
     (set-port-encoding! (current-output-port) "UTF-8")
 
@@ -41,8 +47,13 @@ Options:
            (print-substitution-table)
            (exit 0)))
 
-    (display (pigpen-string->string (encode (cadr args))))
-    (newline)))
+    (let ((pstr (encode (car args))))
+      (cond (do-fill
+             (display (pigpen-string->string
+                       (fill pstr #:columns (string->number do-fill)))))
+            (else
+             (display (pigpen-string->string pstr))))
+      (newline))))
 
 ;;; pigpen ends here
 

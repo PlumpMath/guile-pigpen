@@ -36,7 +36,8 @@
             pigpen-string->list
             string-for-each/pigpen
             string-fold-right/pigpen
-            pigpen-string-split))
+            pigpen-string-split
+            fill))
 
 
 (define <pigpen-string>
@@ -127,5 +128,17 @@ delimiter.  Return list of pinpen strings."
                        (string-drop (list-ref lines 2) 5))
                  (cons pchar plist)))
         (list->pigpen-string (reverse plist)))))
+
+
+(define* (fill pstr #:key (columns 75))
+  (let* ((lst            (pigpen-string->list pstr))
+         (limit          (inexact->exact (round (/ columns 5.0))))
+         (pigpen-newline (char->pigpen-char #\newline)))
+    (let f ((l   lst)
+            (res '()))
+      (if (> (length l) limit)
+          (f (drop l limit)
+             (append res (append (take l limit) (list pigpen-newline))))
+          (list->pigpen-string (append res l))))))
 
 ;;; string.scm ends here
