@@ -61,7 +61,7 @@
          (error "Wrong type (expecting char)" ch))
         ((char=? ch #\nul)
          (make-struct/no-tail <pigpen-char> ch (list "" "" "")))
-        ((assoc-ref %ascii-mapping (char-downcase ch)) =>
+        ((assoc-ref %unicode-mapping (char-downcase ch)) =>
          (cut make-struct/no-tail <pigpen-char> ch <>))
         (else
          (make-struct/no-tail <pigpen-char> ch
@@ -92,7 +92,7 @@ to be a list of 3 elements."
                          (and (string=? (list-ref l 0) (list-ref lst 0))
                               (string=? (list-ref l 1) (list-ref lst 1))
                               (string=? (list-ref l 2) (list-ref lst 2)))))
-                     %ascii-mapping)))
+                     %unicode-mapping)))
         (if m
             (make-struct/no-tail <pigpen-char> (car m) lst)
             (let ((ch (string-trim (list-ref lst 1))))

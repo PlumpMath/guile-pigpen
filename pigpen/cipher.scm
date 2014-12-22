@@ -1,10 +1,10 @@
 (define-module (pigpen cipher)
   #:use-module (ice-9 optargs)
   #:export (print-substitution-table
-            %ascii-mapping
+            %unicode-mapping
             %substitution-table))
 
-(define %ascii-mapping
+(define %unicode-mapping
   '((#\a
      "     "
      "    │"
