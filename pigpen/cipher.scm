@@ -282,7 +282,14 @@ T  ╳     ╳  U     X o╳     ╳o Y
       V                 Z      
 ")
 
-(define* (print-substitution-table #:optional (port (current-output-port)))
-  (display %substitution-table port))
+(define* (print-substitution-table #:key
+                                   (fmt  'ascii)
+                                   (port (current-output-port)))
+  (cond ((eq? fmt 'unicode)
+         (display %substitution-table port))
+        ((eq? fmt 'ascii)
+         (display %ascii-substitution-table port))
+        (else
+         (error "Unknown format" fmt))))
 
 ;;; cipher.scm ends here
