@@ -35,7 +35,9 @@
             pigpen-char->list
             list->pigpen-char
             pigpen-char->string
-            string->pigpen-char))
+            string->pigpen-char
+            pigpen-char:width
+            pigpen-char:height))
 
 
 (define <pigpen-char>
@@ -113,5 +115,14 @@ to be a list of 3 elements."
 (define (string->pigpen-char str)
   "Convert a string STR to a pigpen character."
   (list->pigpen-char (string-split str #\newline)))
+
+
+(define (pigpen-char:width pch)
+  "Get width of a pigpen char PCH in characters."
+  (string-length (car (pigpen-char->list pch))))
+
+(define (pigpen-char:height pch)
+  "Get height of a pigpen char PCH in lines."
+  (length (pigpen-char->list pch)))
 
 ;;; char.scm ends here
