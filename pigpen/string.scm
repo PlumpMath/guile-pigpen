@@ -132,7 +132,8 @@ delimiter.  Return list of pinpen strings."
 
 (define* (fill pstr #:key (columns 75))
   (let* ((lst            (pigpen-string->list pstr))
-         (limit          (inexact->exact (round (/ columns 5.0))))
+         (pchar-width    (exact->inexact (pigpen-char:width (car lst))))
+         (limit          (inexact->exact (round (/ columns pchar-width))))
          (pigpen-newline (char->pigpen-char #\newline)))
     (let f ((l   lst)
             (res '()))
