@@ -28,6 +28,7 @@
   #:use-module (srfi   srfi-26)
   #:use-module (pigpen cipher)
   #:export (pigpen-char
+            make-pigpen-char
             pigpen-char?
             pigpen-char=?
             char->pigpen-char
@@ -44,6 +45,11 @@
   (make-vtable "prpr"
                (lambda (struct port)
                  (format port "#<pigpen-char ~a>" (struct-ref struct 0)))))
+
+(define (make-pigpen-char ch lst)
+  "Make a pigpen char that represents a char CH based on a list LST of
+strings."
+  (make-struct/no-tail <pigpen-char> ch lst))
 
 (define (pigpen-char? x)
   "Check if X is a <pigpen-char> instance."
@@ -62,15 +68,15 @@
   (cond ((not (char? ch))
          (error "Wrong type (expecting char)" ch))
         ((char=? ch #\nul)
-         (make-struct/no-tail <pigpen-char> ch (list "" "" "")))
+         (make-pigpen-char ch (list "" "" "")))
         ((assoc-ref %unicode-mapping (char-downcase ch)) =>
-         (cut make-struct/no-tail <pigpen-char> ch <>))
+         (cut make-pigpen-char ch <>))
         (else
-         (make-struct/no-tail <pigpen-char> ch
-                              (list
-                               "     "
-                               (string-append "  " (string ch) "  ")
-                               "     ")))))
+         (make-pigpen-char ch
+                           (list
+                            "     "
+                            (string-append "  " (string ch) "  ")
+                            "     ")))))
 
 (define (pigpen-char->char pch)
   "Convert a pigpen char PCH to the corresponding character."
@@ -96,10 +102,10 @@ to be a list of 3 elements."
                               (string=? (list-ref l 2) (list-ref lst 2)))))
                      %unicode-mapping)))
         (if m
-            (make-struct/no-tail <pigpen-char> (car m) lst)
+            (make-pigpen-char (car m) lst)
             (let ((ch (string-trim (list-ref lst 1))))
               (if (not (string-null? ch))
-                  (make-struct/no-tail <pigpen-char> (string-ref ch 0) lst)
+                  (make-pigpen-char (string-ref ch 0) lst)
                   (error "Could not convert the list" lst)))))
       (error "Wrong number of lines (expecting 3)" lst)))
 
