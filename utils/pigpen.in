@@ -19,6 +19,7 @@ Options:
   --fill, -f             Fill the pigpen string into specified number of
                          columns.  If no argument is given then use 75 columns
                          as the goal.
+  --format, -F           Use the specified format.
   --substable, -s        Print substitution table and exit.
   --help, -h             Print this message and exit.
 ")
@@ -28,11 +29,13 @@ Options:
 
   (define %option-spec
     '((fill      (single-char #\f) (value #t))
+      (format    (single-char #\F) (value #t))
       (substable (single-char #\s) (value #f))
       (help      (single-char #\h) (value #f))))
 
   (let* ((options    (getopt-long args %option-spec))
          (do-fill    (option-ref options 'fill      #f))
+         (format     (option-ref options 'format    "ascii"))
          (substable? (option-ref options 'substable #f))
          (help?      (option-ref options 'help      #f))
          (args       (option-ref options '()        #f)))
@@ -47,7 +50,7 @@ Options:
            (print-substitution-table)
            (exit 0)))
 
-    (let ((pstr (encode (car args))))
+    (let ((pstr (encode (car args) #:format (string->symbol format))))
       (cond (do-fill
              (display (pigpen-string->string
                        (fill pstr #:columns (string->number do-fill)))))

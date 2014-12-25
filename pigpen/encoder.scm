@@ -32,11 +32,14 @@
   #:use-module (pigpen string)
   #:export (encode))
 
-(define (encode str)
+(define* (encode str #:key (format 'ascii))
   "Convert a string STR to a pigpen list."
-  (list->pigpen-string (string-fold-right (lambda (ch prev)
-                                            (cons (char->pigpen-char ch %unicode-mapping) prev))
-                                          (list (char->pigpen-char #\nul %unicode-mapping))
-                                          str)))
+  (let* ((cipher  (get-cipher format))
+         (pch-nul (char->pigpen-char #\nul (car cipher))))
+    (list->pigpen-string
+     (string-fold-right (lambda (ch prev)
+                          (cons (char->pigpen-char ch (car cipher)) prev))
+                        (list pch-nul)
+                        str))))
 
 ;;; encoder.scm ends here
