@@ -63,13 +63,13 @@ strings."
           (pigpen-char->char b)))
 
 
-(define (char->pigpen-char ch)
+(define (char->pigpen-char ch cipher)
   "Convert a char CH to the corresponding pigpen symbol."
   (cond ((not (char? ch))
          (error "Wrong type (expecting char)" ch))
         ((char=? ch #\nul)
          (make-pigpen-char ch (list "" "" "")))
-        ((assoc-ref %unicode-mapping (char-downcase ch)) =>
+        ((assoc-ref cipher (char-downcase ch)) =>
          (cut make-pigpen-char ch <>))
         (else
          (make-pigpen-char ch

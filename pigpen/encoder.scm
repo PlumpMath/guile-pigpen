@@ -35,8 +35,8 @@
 (define (encode str)
   "Convert a string STR to a pigpen list."
   (list->pigpen-string (string-fold-right (lambda (ch prev)
-                                            (cons (char->pigpen-char ch) prev))
-                                          (list (char->pigpen-char #\nul))
+                                            (cons (char->pigpen-char ch %unicode-mapping) prev))
+                                          (list (char->pigpen-char #\nul %unicode-mapping))
                                           str)))
 
 ;;; encoder.scm ends here

@@ -27,6 +27,7 @@
   #:use-module (srfi   srfi-1)
   #:use-module (srfi   srfi-26)
   #:use-module (ice-9  receive)
+  #:use-module (pigpen cipher)
   #:use-module (pigpen char)
   #:export (pigpen-string
             pigpen-string?
@@ -109,7 +110,7 @@ delimiter.  Return list of pinpen strings."
   (fold (lambda (elem prev)
           (string-append prev (append-line elem 0 "")))
         ""
-        (pigpen-string-split pstr (char->pigpen-char #\newline))))
+        (pigpen-string-split pstr (char->pigpen-char #\newline %unicode-mapping))))
 
 (define (string->pigpen-string str)
   "Convert a string STR to a pigpen string."
@@ -134,7 +135,7 @@ delimiter.  Return list of pinpen strings."
   (let* ((lst            (pigpen-string->list pstr))
          (pchar-width    (exact->inexact (pigpen-char:width (car lst))))
          (limit          (inexact->exact (round (/ columns pchar-width))))
-         (pigpen-newline (char->pigpen-char #\newline)))
+         (pigpen-newline (char->pigpen-char #\newline %unicode-mapping)))
     (let f ((l   lst)
             (res '()))
       (if (> (length l) limit)
