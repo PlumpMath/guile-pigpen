@@ -44,7 +44,9 @@
 (define <pigpen-char>
   (make-vtable "prpr"
                (lambda (struct port)
-                 (format port "#<pigpen-char ~a>" (struct-ref struct 0)))))
+                 (format port "#<pigpen-char ~a ~a>"
+                         (struct-ref struct 0)
+                         (number->string (object-address struct) 16)))))
 
 (define (make-pigpen-char ch lst)
   "Make a pigpen char that represents a char CH based on a list LST of
