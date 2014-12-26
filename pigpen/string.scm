@@ -45,7 +45,9 @@
 (define <pigpen-string>
   (make-vtable "prpr"
                (lambda (struct port)
-                 (format port "#<pigpen-string ~a>" (struct-ref struct 0)))))
+                 (format port "#<pigpen-string ~a ~a>"
+                         (struct-ref struct 0)
+                         (number->string (object-address struct) 16)))))
 
 (define (pigpen-string? x)
   "Check if X is a <pigpen-string> instance."
