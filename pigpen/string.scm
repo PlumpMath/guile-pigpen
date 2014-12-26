@@ -31,6 +31,7 @@
   #:use-module (pigpen char)
   #:export (pigpen-string
             pigpen-string?
+            make-pigpen-string
             string->pigpen-string
             pigpen-string->string
             list->pigpen-string
@@ -51,12 +52,14 @@
   (and (struct? x)
        (eq? (struct-vtable x) <pigpen-string>)))
 
+(define (make-pigpen-string plaintext pchars)
+  "Make a pigpen string of PCHARS that represents a PLAINTEXT."
+  (make-struct/no-tail <pigpen-string> plaintext pchars))
+
 
 (define (list->pigpen-string lst)
   "Convert a list LST to a pigpen string."
-  (make-struct/no-tail <pigpen-string>
-                       (list->string (map pigpen-char->char lst))
-                       lst))
+  (make-pigpen-string (list->string (map pigpen-char->char lst)) lst))
 
 (define (pigpen-string->list pstr)
   "Convert a pigpen string PSTR to a list of pigpen characters."
