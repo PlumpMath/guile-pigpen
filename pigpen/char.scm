@@ -26,6 +26,7 @@
 (define-module (pigpen char)
   #:use-module (srfi   srfi-1)
   #:use-module (srfi   srfi-26)
+  #:use-module (ice-9  format)
   #:use-module (pigpen cipher)
   #:export (pigpen-char
             make-pigpen-char
@@ -44,7 +45,7 @@
 (define <pigpen-char>
   (make-vtable "prpr"
                (lambda (struct port)
-                 (format port "#<pigpen-char ~a ~a>"
+                 (format port "#<pigpen-char ~@c ~a>"
                          (struct-ref struct 0)
                          (number->string (object-address struct) 16)))))
 
