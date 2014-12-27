@@ -94,16 +94,16 @@ strings."
       (struct-ref pch 1)
       (error "Wrong type (expecting pigpen char)" pch)))
 
-(define (list->pigpen-char lst)
-  "Convert list of strings LST to a pigpen character.  LST is expected
-to be a list of 3 elements."
+(define (list->pigpen-char lst cipher)
+  "Convert list of strings LST to a pigpen character using CIPHER.
+LST is expected to be a list of 3 elements."
   (if (= (length lst) 3)
       (let ((m (find (lambda (e)
                        (let ((l (cdr e)))
                          (and (string=? (list-ref l 0) (list-ref lst 0))
                               (string=? (list-ref l 1) (list-ref lst 1))
                               (string=? (list-ref l 2) (list-ref lst 2)))))
-                     %unicode-mapping)))
+                     cipher)))
         (if m
             (make-pigpen-char (car m) lst)
             (let ((ch (string-trim (list-ref lst 1))))
@@ -121,9 +121,9 @@ to be a list of 3 elements."
                        (list-ref pchar-list 2)))
       (error "Wrong type (expecting pigpen char)" pch)))
 
-(define (string->pigpen-char str)
-  "Convert a string STR to a pigpen character."
-  (list->pigpen-char (string-split str #\newline)))
+(define (string->pigpen-char str cipher)
+  "Convert a string STR to a pigpen character using a CIPHER."
+  (list->pigpen-char (string-split str #\newline) cipher))
 
 
 (define (pigpen-char:width pch)
