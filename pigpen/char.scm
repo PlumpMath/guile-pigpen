@@ -72,7 +72,7 @@ strings."
          (error "Wrong type (expecting char)" ch))
         ((char=? ch #\nul)
          (make-pigpen-char ch (list "" "" "")))
-        ((assoc-ref cipher (char-downcase ch)) =>
+        ((assoc-ref (get-cipher-alphabet cipher) (char-downcase ch)) =>
          (cut make-pigpen-char ch <>))
         (else
          (make-pigpen-char ch
@@ -98,12 +98,13 @@ strings."
   "Convert list of strings LST to a pigpen character using CIPHER.
 LST is expected to be a list of 3 elements."
   (if (= (length lst) 3)
-      (let ((m (find (lambda (e)
+      (let* ((alphabet (get-cipher-alphabet cipher))
+             (m (find (lambda (e)
                        (let ((l (cdr e)))
                          (and (string=? (list-ref l 0) (list-ref lst 0))
                               (string=? (list-ref l 1) (list-ref lst 1))
                               (string=? (list-ref l 2) (list-ref lst 2)))))
-                     cipher)))
+                     alphabet)))
         (if m
             (make-pigpen-char (car m) lst)
             (let ((ch (string-trim (list-ref lst 1))))

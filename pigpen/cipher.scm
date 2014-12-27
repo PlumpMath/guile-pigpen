@@ -1,13 +1,71 @@
 (define-module (pigpen cipher)
   #:use-module (ice-9 optargs)
-  #:export (print-substitution-table
+  #:export (pigpen-cipher
+            pigpen-cipher?
+            make-pigpen-cipher
+            get-cipher-name
+            get-cipher-alphabet
+            get-cipher-substable
+            add-cipher!
             get-cipher
-            %unicode-mapping
-            %substitution-table
-            %ascii-mapping
-            %ascii-substitution-table))
+            print-substitution-table))
 
-(define %unicode-mapping
+(define %ciphers '())
+
+(define <pigpen-cipher>
+  (make-vtable "prprpr"
+               (lambda (struct port)
+                 (format port "#<pigpen-cipher ~a ~a>"
+                         (struct-ref struct 0) ;name
+                         (number->string (object-address struct) 16)))))
+
+(define (pigpen-cipher? x)
+  "Check if X is a <pigpen-cipher> instance."
+  (and (struct? x)
+       (eq? (struct-vtable x) <pigpen-cipher>)))
+
+(define (make-pigpen-cipher name alphabet substitution-table)
+  (make-struct/no-tail <pigpen-cipher> name alphabet substitution-table))
+
+(define (get-cipher-name cipher)
+  (if (pigpen-cipher? cipher)
+      (struct-ref cipher 0)
+      (error "Wrong type (expecting a pigpen cipher)" cipher)))
+
+(define (get-cipher-alphabet cipher)
+  (if (pigpen-cipher? cipher)
+      (struct-ref cipher 1)
+      (error "Wrong type (expecting a pigpen cipher)" cipher)))
+
+(define (get-cipher-substable cipher)
+  (if (pigpen-cipher? cipher)
+      (struct-ref cipher 2)
+      (error "Wrong type (expecting a pigpen cipher)" cipher)))
+
+
+(define (add-cipher! name cipher)
+  (set! %ciphers (acons name cipher %ciphers)))
+
+(define (get-cipher name)
+  "Get a cipher by NAME."
+  (assoc-ref %ciphers name))
+
+
+(define* (print-substitution-table #:key
+                                   (fmt  'ascii)
+                                   (port (current-output-port)))
+  (let ((cipher (get-cipher fmt)))
+    (if cipher
+        (display (get-cipher-substable cipher) port)
+        (error "Unknown cipher type" fmt))))
+
+
+;;; Ciphers
+
+(add-cipher!
+ 'unicode
+ (make-pigpen-cipher
+  'unicode
   '((#\a
      "     "
      "    │"
@@ -119,9 +177,33 @@
     (#\space
      "     "
      "     "
-     "     ")))
+     "     "))
+  "
+A     B     C     J     K     L
+    │   │           o │ o │ o  
+━━━━┿━━━┿━━━━     ━━━━┿━N━┿━━━━
+D   │ E │   F     M o │ o │ o O
+━━━━┿━━━┿━━━━     ━━━━┿━━━┿━━━━
+    │   │           o │ o │ o  
+G     H     I     P     Q     R
+                               
+      S                 W      
+    ╲   ╱             ╲   ╱    
+    ╲╲ ╱╱             ╲╲o╱╱    
+     ╲╳╱               ╲╳╱     
+  ╲╲     ╱╱         ╲╲     ╱╱  
+T  ╳     ╳  U     X o╳     ╳o Y
+  ╱╱     ╲╲         ╱╱     ╲╲  
+     ╱╳╲               ╱╳╲     
+    ╱╱ ╲╲             ╱╱o╲╲    
+    ╱   ╲             ╱   ╲    
+      V                 Z      
+"))
 
-(define %ascii-mapping
+(add-cipher!
+ 'ascii
+ (make-pigpen-cipher
+  'ascii
   '((#\a
      "    ."
      "    |"
@@ -233,9 +315,33 @@
     (#\space
      "     "
      "     "
-     "     ")))
+     "     "))
+  "
+A   |  B  |   C   J   |  K  |   L
+    |     |         o |  o  | o  
+----+-----+----   ----+--N--+----
+D   |  E  |   F   M o |  o  | o O
+----+-----+----   ----+-----+----
+    |     |         o |  o  | o  
+G   |  H  |   I   P   |  Q  |   R
+                                 
+       S                 W       
+     \\   /             \\   /     
+      [ ]               [o]      
+       V                 V       
+ \\           /     \\           / 
+T [ ]>   <[ ] U   X [o]>   <[o] Y
+ /           \\     /           \\ 
+       A                 A       
+      [ ]               [o]      
+     /   \\             /   \\     
+       V                 Z       
+"))
 
-(define %none-mapping
+(add-cipher!
+ 'none
+ (make-pigpen-cipher
+  'none
   '((#\a
      ".---."
      ".---|"
@@ -351,72 +457,7 @@
     (#\-
      "     "
      "-----"
-     "     ")))
-
-(define %ascii-substitution-table
-  "
-A   |  B  |   C   J   |  K  |   L
-    |     |         o |  o  | o  
-----+-----+----   ----+--N--+----
-D   |  E  |   F   M o |  o  | o O
-----+-----+----   ----+-----+----
-    |     |         o |  o  | o  
-G   |  H  |   I   P   |  Q  |   R
-                                 
-       S                 W       
-     \\   /             \\   /     
-      [ ]               [o]      
-       V                 V       
- \\           /     \\           / 
-T [ ]>   <[ ] U   X [o]>   <[o] Y
- /           \\     /           \\ 
-       A                 A       
-      [ ]               [o]      
-     /   \\             /   \\     
-       V                 Z       
-")
-
-
-(define %substitution-table
-  "
-A     B     C     J     K     L
-    │   │           o │ o │ o  
-━━━━┿━━━┿━━━━     ━━━━┿━N━┿━━━━
-D   │ E │   F     M o │ o │ o O
-━━━━┿━━━┿━━━━     ━━━━┿━━━┿━━━━
-    │   │           o │ o │ o  
-G     H     I     P     Q     R
-                               
-      S                 W      
-    ╲   ╱             ╲   ╱    
-    ╲╲ ╱╱             ╲╲o╱╱    
-     ╲╳╱               ╲╳╱     
-  ╲╲     ╱╱         ╲╲     ╱╱  
-T  ╳     ╳  U     X o╳     ╳o Y
-  ╱╱     ╲╲         ╱╱     ╲╲  
-     ╱╳╲               ╱╳╲     
-    ╱╱ ╲╲             ╱╱o╲╲    
-    ╱   ╲             ╱   ╲    
-      V                 Z      
-")
-
-(define %ciphers
-  `((none ,%none-mapping   #f)
-    (ascii   ,%ascii-mapping   ,%ascii-substitution-table)
-    (unicode ,%unicode-mapping ,%substitution-table)))
-
-(define* (print-substitution-table #:key
-                                   (fmt  'ascii)
-                                   (port (current-output-port)))
-  (cond ((eq? fmt 'unicode)
-         (display %substitution-table port))
-        ((eq? fmt 'ascii)
-         (display %ascii-substitution-table port))
-        (else
-         (error "Unknown format" fmt))))
-
-(define (get-cipher name)
-  "Get a cipher by NAME."
-  (assoc-ref %ciphers name))
+     "     "))
+  #f))
 
 ;;; cipher.scm ends here

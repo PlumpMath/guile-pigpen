@@ -115,7 +115,9 @@ delimiter.  Return list of pinpen strings."
   (fold (lambda (elem prev)
           (string-append prev (append-line elem 0 "")))
         ""
-        (pigpen-string-split pstr (char->pigpen-char #\newline %unicode-mapping))))
+        (pigpen-string-split pstr (char->pigpen-char #\newline
+                                                     ;; FIXME:
+                                                     (get-cipher 'ascii)))))
 
 (define (string->pigpen-string str)
   "Convert a string STR to a pigpen string."

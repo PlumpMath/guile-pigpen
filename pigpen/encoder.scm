@@ -35,10 +35,10 @@
 (define* (encode str #:key (format 'ascii))
   "Convert a string STR to a pigpen list."
   (let* ((cipher  (get-cipher format))
-         (pch-nul (char->pigpen-char #\nul (car cipher))))
+         (pch-nul (char->pigpen-char #\nul cipher)))
     (list->pigpen-string
      (string-fold-right (lambda (ch prev)
-                          (cons (char->pigpen-char ch (car cipher)) prev))
+                          (cons (char->pigpen-char ch cipher) prev))
                         (list pch-nul)
                         str))))
 
