@@ -38,6 +38,7 @@
             list->pigpen-char
             pigpen-char->string
             string->pigpen-char
+            pigpen-char:cipher-name
             pigpen-char:width
             pigpen-char:height))
 
@@ -131,6 +132,10 @@ LST is expected to be a list of 3 elements."
   (list->pigpen-char (string-split str #\newline) cipher))
 
 
+(define (pigpen-char:cipher-name pch)
+  "Get a cipher name of a pigpeh char PCH."
+  (struct-ref pch 0))
+
 (define (pigpen-char:width pch)
   "Get width of a pigpen char PCH in characters."
   (string-length (car (pigpen-char->list pch))))
