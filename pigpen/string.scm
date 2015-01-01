@@ -122,13 +122,14 @@ delimiter.  Return list of pinpen strings."
           ""
           (pigpen-string-split pstr (char->pigpen-char #\newline cipher)))))
 
-(define (string->pigpen-string str)
+(define (string->pigpen-string str cipher)
   "Convert a string STR to a pigpen string."
 
   (define (parse-pigpen-char lines)
     (list->pigpen-char (list (string-take (list-ref lines 0) 5)
                              (string-take (list-ref lines 1) 5)
-                             (string-take (list-ref lines 2) 5))))
+                             (string-take (list-ref lines 2) 5))
+                       cipher))
 
   (let parse ((lines (string-split str #\newline))
               (plist '()))
