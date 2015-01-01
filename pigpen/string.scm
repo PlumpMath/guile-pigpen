@@ -31,6 +31,7 @@
   #:use-module (pigpen char)
   #:export (pigpen-string
             pigpen-string?
+            pigpen-string:cipher-name
             make-pigpen-string
             string->pigpen-string
             pigpen-string->string
@@ -53,6 +54,9 @@
   "Check if X is a <pigpen-string> instance."
   (and (struct? x)
        (eq? (struct-vtable x) <pigpen-string>)))
+
+(define (pigpen-string:cipher-name pstr)
+  (pigpen-char:cipher-name (car (pigpen-string->list pstr))))
 
 (define (make-pigpen-string plaintext pchars)
   "Make a pigpen string of PCHARS that represents a PLAINTEXT."
@@ -112,12 +116,11 @@ delimiter.  Return list of pinpen strings."
                       pstr))
         res))
 
-  (fold (lambda (elem prev)
-          (string-append prev (append-line elem 0 "")))
-        ""
-        (pigpen-string-split pstr (char->pigpen-char #\newline
-                                                     ;; FIXME:
-                                                     (get-cipher 'ascii)))))
+  (let ((cipher (get-cipher (pigpen-string:cipher-name pstr))))
+    (fold (lambda (elem prev)
+            (string-append prev (append-line elem 0 "")))
+          ""
+          (pigpen-string-split pstr (char->pigpen-char #\newline cipher)))))
 
 (define (string->pigpen-string str)
   "Convert a string STR to a pigpen string."
@@ -141,8 +144,9 @@ delimiter.  Return list of pinpen strings."
 (define* (fill pstr #:key (columns 75))
   (let* ((lst            (pigpen-string->list pstr))
          (pchar-width    (exact->inexact (pigpen-char:width (car lst))))
+         (cipher         (get-cipher (pigpen-string:cipher-name pstr)))
          (limit          (inexact->exact (round (/ columns pchar-width))))
-         (pigpen-newline (char->pigpen-char #\newline %unicode-mapping)))
+         (pigpen-newline (char->pigpen-char #\newline cipher)))
     (let f ((l   lst)
             (res '()))
       (if (> (length l) limit)
