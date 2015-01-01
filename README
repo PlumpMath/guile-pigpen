@@ -1,9 +1,9 @@
 # -*- mode: org; -*-
 
 #+BEGIN_EXAMPLE
-  ━━━━┑  ╱╱ ┍━━━━     ┍━━━┑     ━━━━┑┍━━━━━━━━┑━━━━┑┍━━━┑┍━━━┑
-      │  ╳  │    │ o  │   │━━━━━  o ││        │  o ││   ││ o │
-         ╲╲      ┕━━━━┕━━━┙                         ┕━━━┙┕━━━┙
+----.    /.----.    .---.     ----..--------.----..---..---.
+    |<[ ] |    | o  |   |-----  o ||        |  o ||   || o |
+    '    \'    '----'---'     ----''        '----''---''---'
 #+END_EXAMPLE
 
 Guile-Pigpen is an implementation of [[https://en.wikipedia.org/wiki/Pigpen_cipher][Pigpen cipher]] as a GNU Guile
@@ -27,12 +27,12 @@ $ make install
 #+BEGIN_EXAMPLE
 $ pigpen 'hello
 world!'
-┍━━━┑┍━━━┑          ┍━━━━
-│   ││   ││ o  │ o  │ o  
-     ┕━━━┙┕━━━━┕━━━━┕━━━━
-╲   ╱┍━━━━┍━━━━     ━━━━┑     
-╲╲o╱╱│ o  │ o  │ o      │  !  
- ╲╳╱ ┕━━━━     ┕━━━━━━━━┙   
+.---..---..    .    .----
+|   ||   || o  | o  | o  
+'   ''---''----'----'----
+\   /.----.----.    ----.     
+ [o] | o  | o  | o      |  !  
+  V  '----'    '--------'     
 #+END_EXAMPLE
 
   See =pigpen -h= for allowed options.
